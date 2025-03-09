@@ -1,6 +1,6 @@
 # FastAPI-AWS-Boilerplate
 it's a starter project for FastAPI &amp; AWS
-
+```
 project_root/
 │── app/
 │   ├── main.py  # FastAPI application
@@ -29,7 +29,7 @@ project_root/
 │
 │── Jenkinsfile  # Alternative CI/CD with Jenkins
 │── README.md  # Project breakdown and setup instructions
-
+```
 # README.md
 
 # Python API with SQL, AWS, and CI/CD
