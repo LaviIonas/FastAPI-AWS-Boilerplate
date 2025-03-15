@@ -70,10 +70,10 @@ def fetch_arxiv_papers(search_query, start=0, max_results=10, sort_by="submitted
     }
     query_string = urlencode(query_params)
     url = f"{ARXIV_API}?{query_string}"
-    
+    print(url)
     # Fetch data
     response = feedparser.parse(url)
-    
+    print(response)
     # Parse results
     results = []
     for entry in response.entries:
@@ -87,24 +87,12 @@ def fetch_arxiv_papers(search_query, start=0, max_results=10, sort_by="submitted
     return results
 
 # Example usage
-# if __name__ == "__main__":
-#     search_query = "cat:cs.AI AND ti:transformer"
-#     papers = fetch_arxiv_papers(search_query, max_results=5)
-#     for paper in papers:
-#         print(f"Title: {paper['title']}")
-#         print(f"Authors: {', '.join(paper['authors'])}")
-#         print(f"Abstract: {paper['abstract']}")
-#         print(f"Link: {paper['link']}")
-#         print("-" * 40)
-
-# Example usage
 if __name__ == "__main__":
-    # Example 1: Fetch by arXiv ID
-    arxiv_id = "2411.18585"
-    paper_by_arxiv_id = fetch_paper_by_id(arxiv_id)
-    print(f"Result for arXiv ID '{arxiv_id}':", paper_by_arxiv_id)
-    
-    # Example 2: Fetch by DOI
-    doi = "10.48550/arXiv.2411.18585"
-    paper_by_doi = fetch_paper_by_id(doi)
-    print(f"Result for DOI '{doi}':", paper_by_doi)
+    search_query = "cat:cs.AI AND ti:transformer"
+    papers = fetch_arxiv_papers(search_query, max_results=5)
+    # for paper in papers:
+    #     print(f"Title: {paper['title']}")
+    #     print(f"Authors: {', '.join(paper['authors'])}")
+    #     print(f"Abstract: {paper['abstract']}")
+    #     print(f"Link: {paper['link']}")
+    #     print("-" * 40)

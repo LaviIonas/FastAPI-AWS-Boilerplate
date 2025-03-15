@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 class PostBase(BaseModel):
     content: str
@@ -10,3 +11,12 @@ class PostBase(BaseModel):
 class CreatePost(PostBase):
     class Config:
         orm_mode = True
+
+
+class PaperBase(BaseModel):
+    id: str
+    title: str
+    summary: str
+    authors: List[str]
+    categories: List[str]
+    pdf_url: str
