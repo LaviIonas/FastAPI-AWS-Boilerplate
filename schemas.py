@@ -19,4 +19,5 @@ class PaperBase(BaseModel):
     summary: str
     authors: List[str]
     categories: List[str]
+    link: str
     pdf_url: str

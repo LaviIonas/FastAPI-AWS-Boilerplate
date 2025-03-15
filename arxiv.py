@@ -44,7 +44,7 @@ def fetch_paper_by_id(identifier):
     else:
         return None
 
-def fetch_arxiv_papers(search_query, start=0, max_results=10, sort_by="submittedDate", sort_order="descending"):
+def fetch_arxiv_papers(search_query, start=0, max_results=3, sort_by="submittedDate", sort_order="descending"):
     """
     Fetch papers from the arXiv API based on the query parameters.
     
@@ -70,18 +70,29 @@ def fetch_arxiv_papers(search_query, start=0, max_results=10, sort_by="submitted
     }
     query_string = urlencode(query_params)
     url = f"{ARXIV_API}?{query_string}"
-    print(url)
+
     # Fetch data
     response = feedparser.parse(url)
-    print(response)
+
     # Parse results
     results = []
     for entry in response.entries:
+
+        # Seperate out links
+        for link in entry.links:
+            if link.rel == "alternate":  # The main arXiv page
+                arxiv_link = link.href
+            elif link.title == "pdf":  # The direct PDF link
+                pdf_link = link.href
+
         results.append({
+            "id":entry.id,
             "title": entry.title,
+            "summary": entry.summary,
             "authors": [author.name for author in entry.authors],
-            "abstract": entry.summary,
-            "link": entry.link
+            "categories": [cat.term for cat in entry.categories],
+            "link": arxiv_link,
+            "pdf_url": pdf_link
         })
     
     return results
