@@ -38,15 +38,6 @@ def get_test_one_post(id:int ,db:Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"The id: {id} you requested for does not exist")
     return idv_post
 
-@router.get('/{id}', response_model=schemas.CreatePost, status_code=status.HTTP_200_OK)
-def get_test_one_post(id:int ,db:Session = Depends(get_db)):
-
-    idv_post = db.query(models.Post).filter(models.Post.id == id).first()
-
-    if idv_post is None:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"The id: {id} you requested for does not exist")
-    return idv_post
-
 @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
 def delete_test_post(id:int, db:Session = Depends(get_db)):
 
@@ -59,7 +50,7 @@ def delete_test_post(id:int, db:Session = Depends(get_db)):
     deleted_post.delete(synchronize_session=False)
     db.commit()
 
-@router.put('/posts/{id}', response_model=schemas.CreatePost)
+@router.put('/{id}', response_model=schemas.CreatePost)
 def update_test_post(update_post:schemas.PostBase, id:int, db:Session = Depends(get_db)):
 
     updated_post =  db.query(models.Post).filter(models.Post.id == id)
