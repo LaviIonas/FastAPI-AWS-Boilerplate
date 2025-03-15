@@ -21,3 +21,17 @@ class PaperBase(BaseModel):
     categories: List[str]
     link: str
     pdf_url: str
+
+class SearchQuery(BaseModel):
+    query: str
+
+class SearchResult(BaseModel):
+    id: str
+    title: str
+    summary: str
+    authors: List[str]
+    link: str
+    pdf_url: str
+
+class SearchResults(BaseModel):
+    results: List[SearchResult]

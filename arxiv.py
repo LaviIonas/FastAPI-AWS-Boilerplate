@@ -1,5 +1,10 @@
 import feedparser
 from urllib.parse import urlencode
+import xml.etree.ElementTree as ET
+import httpx
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+from typing import List
 
 def fetch_paper_by_id(identifier):
     """
@@ -70,7 +75,6 @@ def fetch_arxiv_papers(search_query, start=0, max_results=3, sort_by="submittedD
     }
     query_string = urlencode(query_params)
     url = f"{ARXIV_API}?{query_string}"
-
     # Fetch data
     response = feedparser.parse(url)
 
@@ -90,17 +94,45 @@ def fetch_arxiv_papers(search_query, start=0, max_results=3, sort_by="submittedD
             "title": entry.title,
             "summary": entry.summary,
             "authors": [author.name for author in entry.authors],
-            "categories": [cat.term for cat in entry.categories],
             "link": arxiv_link,
             "pdf_url": pdf_link
         })
     
     return results
 
+async def fetch_arxiv_papers_async(query: str, max_results: int = 3):
+    """Fetch papers from arXiv API"""
+    base_url = "http://export.arxiv.org/api/query"
+
+    start=0
+    max_results=1 
+    sort_by="submittedDate"
+    sort_order="descending"
+
+    params = {
+        "search_query": f"all:{query}",
+        "start": start,
+        "max_results": max_results,
+        "sortBy": sort_by,
+        "sortOrder": sort_order
+    }
+    
+    async with httpx.AsyncClient() as client:
+        response = await client.get(base_url, params=params)
+        print(response)
+        print(type(response))
+        if response.status_code != 200:
+            raise HTTPException(status_code=response.status_code, 
+                               detail="Error fetching data from arXiv")
+        # return parse_arxiv_response(response.text)
+        return response.text
+
+
 # Example usage
 if __name__ == "__main__":
     search_query = "cat:cs.AI AND ti:transformer"
-    papers = fetch_arxiv_papers(search_query, max_results=5)
+    papers = fetch_arxiv_papers(search_query, max_results=3)
+    print(papers)
     # for paper in papers:
     #     print(f"Title: {paper['title']}")
     #     print(f"Authors: {', '.join(paper['authors'])}")
