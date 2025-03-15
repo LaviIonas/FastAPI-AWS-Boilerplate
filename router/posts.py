@@ -28,3 +28,21 @@ def test_posts_sent(post_post:schemas.CreatePost, db:Session = Depends(get_db)):
     db.refresh(new_post)
 
     return [new_post]
+
+@router.get('/{id}', response_model=schemas.CreatePost, status_code=status.HTTP_200_OK)
+def get_test_one_post(id:int ,db:Session = Depends(get_db)):
+
+    idv_post = db.query(models.Post).filter(models.Post.id == id).first()
+
+    if idv_post is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"The id: {id} you requested for does not exist")
+    return idv_post
+
+@router.get('/{id}', response_model=schemas.CreatePost, status_code=status.HTTP_200_OK)
+def get_test_one_post(id:int ,db:Session = Depends(get_db)):
+
+    idv_post = db.query(models.Post).filter(models.Post.id == id).first()
+
+    if idv_post is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"The id: {id} you requested for does not exist")
+    return idv_post
