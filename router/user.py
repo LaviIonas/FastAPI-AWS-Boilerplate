@@ -80,3 +80,20 @@ def change_password(password_data: dict,
     
     return {"message": "Password updated successfully"}
 
+@router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
+def delete_account(password: str,
+                   db: Session = Depends(get_db),
+                   current_user: models.User = Depends(oauth2.get_current_user)):
+    
+    # Verify password before deletion
+    if not utils.verify_password(password, current_user.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect password"
+        )
+    
+    user_query = db.query(models.User).filter(models.User.id == current_user.id)
+    user_query.delete(synchronize_session=False)
+    db.commit()
+    
+    return
