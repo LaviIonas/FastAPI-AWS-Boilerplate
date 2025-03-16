@@ -37,5 +37,24 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 def get_current_user(current_user: models.User = Depends(oauth2.get_current_user)):
     return current_user
 
-
+@router.put("/me", response_model=schemas.UserOut)
+def update_user(updated_info: schemas.UserBase, 
+                db: Session = Depends(get_db),
+                current_user: models.User = Depends(oauth2.get_current_user)):
+    
+    user_query = db.query(models.User).filter(models.User.id == current_user.id)
+    
+    if updated_info.email != current_user.email:
+        # Check if new email already exists
+        existing_email = db.query(models.User).filter(models.User.email == updated_info.email).first()
+        if existing_email:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already registered"
+            )
+    
+    user_query.update(updated_info.dict(), synchronize_session=False)
+    db.commit()
+    
+    return user_query.first()
 
