@@ -58,3 +58,25 @@ def update_user(updated_info: schemas.UserBase,
     
     return user_query.first()
 
+@router.put("/me/password")
+def change_password(password_data: dict, 
+                    db: Session = Depends(get_db),
+                    current_user: models.User = Depends(oauth2.get_current_user)):
+    
+    # Verify current password
+    if not utils.verify_password(password_data["current_password"], current_user.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect password"
+        )
+    
+    # Hash new password
+    hashed_password = utils.hash_password(password_data["new_password"])
+    
+    # Update password
+    user_query = db.query(models.User).filter(models.User.id == current_user.id)
+    user_query.update({"password": hashed_password}, synchronize_session=False)
+    db.commit()
+    
+    return {"message": "Password updated successfully"}
+
