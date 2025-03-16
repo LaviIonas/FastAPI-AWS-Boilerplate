@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from . import schemas, models, database
-from .config import settings
+from config import settings
 
 # Secret key and algorithm for JWT tokens
 SECRET_KEY = settings.secret_key
