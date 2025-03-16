@@ -3,12 +3,13 @@ from fastapi import HTTPException, Depends
 from sqlalchemy.orm import Session
 from starlette import status
 import models
-from schemas import *
+from schemas import * 
 from fastapi import APIRouter
 from database import get_db
 import httpx
 import ast
 import xml.etree.ElementTree as ET
+from .. import schemas, oauth2
 
 router = APIRouter(
     prefix='/papers',
@@ -102,4 +103,12 @@ async def fetch_arxiv_query_result(search_query: SearchQuery):
         search_results.append(search_result)
     
     return search_results
+    
+
+# User saved papers CRUD
+
+# User should be able to add and delete papers to their readinglist. 
+# @router.post('/save/', status_code=status.HTTP_201_CREATED)
+# def save_paper(paper: schemas.PaperCreate, db: Session = Depends(get_db), 
+#                current_user: models.User = Depends(oauth2.get_current_user)):
     

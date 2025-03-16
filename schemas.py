@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
+from datetime import datetime
 
 class PostBase(BaseModel):
     content: str
@@ -35,3 +36,16 @@ class SearchResult(BaseModel):
 
 class SearchResults(BaseModel):
     results: List[SearchResult]
+
+class PaperCreate(PaperBase):
+    notes: Optional[str] = None
+
+class PaperWithNotes(PaperBase):
+    id: int
+    notes: Optional[str] = None
+    
+    class Config:
+        orm_mode = True
+
+class NotesUpdate(BaseModel):
+    notes: str
